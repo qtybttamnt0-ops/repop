@@ -5,244 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Battle Royale - Qutibah</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; touch-action: none; }
+/* إعدادات التلفون لمنع الشاشة من التحرك أو الزووم */
+html, body { overscroll-behavior-y: none; touch-action: none; }
+* { box-sizing: border-box; margin: 0; padding: 0; touch-action: none; user-select: none; -webkit-user-select: none; }
 body { background: #0a0f0a; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
 #gameCanvas { display: block; }
 #ui { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
+
 /* HUD */
-#healthBar { position: absolute; bottom: 160px; left: 20px; width: 150px; }
-#healthLabel { color: #fff; font-size: 12px; margin-bottom: 4px; text-shadow: 0 0 6px #000; }
-#healthBg { background: rgba(0,0,0,0.5); border-radius: 8px; height: 12px; overflow: hidden; border: 1px solid #555; }
-#healthFill { background: linear-gradient(90deg,#e74c3c,#e67e22); height: 100%; border-radius: 8px; transition: width 0.3s; }
-#ammoHud { position: absolute; bottom: 160px; right: 20px; color: #fff; font-size: 22px; font-weight: bold; text-shadow: 0 0 8px #000; text-align: right; }
-#ammoHud span { font-size: 13px; color: #aaa; display: block; }
-#killsHud { position: absolute; top: 16px; left: 20px; color: #ffd700; font-size: 15px; font-weight: bold; text-shadow: 0 0 8px #000; }
-#aliveHud { position: absolute; top: 16px; right: 20px; color: #fff; font-size: 14px; text-shadow: 0 0 8px #000; text-align: right; }
-#zoneHud { position: absolute; top: 44px; left: 50%; transform: translateX(-50%); color: #ff6b6b; font-size: 12px; text-shadow: 0 0 6px #000; }
-/* Controls */
-#controls { position: absolute; bottom: 0; left: 0; width: 100%; height: 155px; pointer-events: all; }
-#joystickZone { position: absolute; bottom: 20px; left: 20px; width: 120px; height: 120px; }
-#joystickBase { width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 2px solid rgba(255,255,255,0.2); position: absolute; }
-#joystickKnob { width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.35); border: 2px solid rgba(255,255,255,0.6); position: absolute; top: 35px; left: 35px; transition: none; }
-#btnShoot { position: absolute; bottom: 25px; right: 25px; width: 75px; height: 75px; border-radius: 50%; background: rgba(231,76,60,0.75); border: 3px solid rgba(231,76,60,0.9); color: #fff; font-size: 13px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: all; user-select: none; box-shadow: 0 0 20px rgba(231,76,60,0.4); flex-direction: column; }
-#btnShoot.active { background: rgba(231,76,60,1); transform: scale(0.93); }
-#btnReload { position: absolute; bottom: 30px; right: 115px; width: 52px; height: 52px; border-radius: 50%; background: rgba(52,152,219,0.7); border: 2px solid rgba(52,152,219,0.9); color: #fff; font-size: 11px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: all; user-select: none; }
+#healthBar { position: absolute; bottom: 180px; left: 30px; width: 180px; }
+#healthLabel { color: #fff; font-size: 14px; margin-bottom: 6px; text-shadow: 0 0 6px #000; font-weight: bold; }
+#healthBg { background: rgba(0,0,0,0.6); border-radius: 8px; height: 16px; overflow: hidden; border: 2px solid #555; }
+#healthFill { background: linear-gradient(90deg,#e74c3c,#e67e22); height: 100%; border-radius: 6px; transition: width 0.3s; }
+#ammoHud { position: absolute; bottom: 180px; right: 30px; color: #fff; font-size: 26px; font-weight: bold; text-shadow: 0 0 8px #000; text-align: right; }
+#ammoHud span { font-size: 14px; color: #aaa; display: block; }
+#killsHud { position: absolute; top: 20px; left: 20px; color: #ffd700; font-size: 18px; font-weight: bold; text-shadow: 0 0 8px #000; }
+#aliveHud { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 18px; text-shadow: 0 0 8px #000; text-align: right; font-weight: bold; }
+#zoneHud { position: absolute; top: 50px; left: 50%; transform: translateX(-50%); color: #ff6b6b; font-size: 16px; font-weight: bold; text-shadow: 0 0 6px #000; }
+
+/* أزرار التحكم للتلفون - مكبرة وموزعة صح */
+#controls { position: absolute; bottom: 0; left: 0; width: 100%; height: 200px; pointer-events: all; }
+#joystickZone { position: absolute; bottom: 30px; left: 30px; width: 150px; height: 150px; }
+#joystickBase { width: 150px; height: 150px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); position: absolute; }
+#joystickKnob { width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.5); border: 2px solid rgba(255,255,255,0.8); position: absolute; top: 45px; left: 45px; transition: none; }
+
+#btnShoot { position: absolute; bottom: 40px; right: 30px; width: 90px; height: 90px; border-radius: 50%; background: rgba(231,76,60,0.8); border: 4px solid rgba(231,76,60,1); color: #fff; font-size: 16px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: all; box-shadow: 0 0 20px rgba(231,76,60,0.5); flex-direction: column; }
+#btnShoot.active { background: rgba(231,76,60,1); transform: scale(0.9); }
+
+#btnReload { position: absolute; bottom: 40px; right: 140px; width: 60px; height: 60px; border-radius: 50%; background: rgba(52,152,219,0.8); border: 3px solid rgba(52,152,219,1); color: #fff; font-size: 12px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: all; }
 #btnReload.active { transform: scale(0.9); }
-#btnAim { position: absolute; bottom: 95px; right: 115px; width: 52px; height: 52px; border-radius: 50%; background: rgba(46,204,113,0.7); border: 2px solid rgba(46,204,113,0.9); color: #fff; font-size: 11px; display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: all; user-select: none; }
-#btnAim.toggle { background: rgba(46,204,113,1); box-shadow: 0 0 12px rgba(46,204,113,0.6); }
-/* screens */
-#startScreen, #gameoverScreen { position: fixed; top:0;left:0;width:100%;height:100%; background: rgba(0,0,0,0.88); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; color: #fff; text-align: center; padding: 20px; }
-#startScreen h1 { font-size: 36px; color: #ffd700; text-shadow: 0 0 20px #ffd700; margin-bottom: 8px; }
-#startScreen p { color: #aaa; font-size: 14px; margin-bottom: 20px; }
+
+#btnAim { position: absolute; bottom: 120px; right: 120px; width: 60px; height: 60px; border-radius: 50%; background: rgba(46,204,113,0.8); border: 3px solid rgba(46,204,113,1); color: #fff; font-size: 12px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: all; }
+#btnAim.toggle { background: rgba(46,204,113,1); box-shadow: 0 0 15px rgba(46,204,113,0.8); }
+
+/* الشاشات */
+#startScreen, #gameoverScreen { position: fixed; top:0;left:0;width:100%;height:100%; background: rgba(0,0,0,0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 50; color: #fff; text-align: center; padding: 20px; }
+#startScreen h1 { font-size: 40px; color: #ffd700; text-shadow: 0 0 20px #ffd700; margin-bottom: 10px; }
+#startScreen p { color: #ccc; font-size: 16px; margin-bottom: 30px; }
 #gameoverScreen { display: none; }
-#gameoverScreen h1 { font-size: 32px; margin-bottom: 12px; }
-.bigBtn { background: linear-gradient(135deg,#e74c3c,#c0392b); border: none; color: #fff; padding: 16px 48px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 20px rgba(231,76,60,0.5); }
-/* Characters Selection */
-.char-container { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; width: 100%; }
-.char-btn { flex: 1; padding: 10px; background: #333; border: 2px solid #555; border-radius: 10px; cursor: pointer; transition: 0.2s; color: white; font-size: 14px; }
-.char-btn small { display: block; font-size: 11px; color: #bbb; margin-top: 5px; }
-.char-btn.active { border-color: #ffd700; background: #444; transform: scale(1.05); }
+#gameoverScreen h1 { font-size: 36px; margin-bottom: 15px; }
+.bigBtn { background: linear-gradient(135deg,#e74c3c,#c0392b); border: none; color: #fff; padding: 18px 50px; border-radius: 35px; font-size: 20px; font-weight: bold; cursor: pointer; margin-top: 25px; box-shadow: 0 4px 20px rgba(231,76,60,0.6); }
 
-#reloadIndicator { position: absolute; bottom: 220px; right: 20px; color: #3498db; font-size: 13px; font-weight: bold; display: none; animation: blink 0.5s infinite; }
+/* الشخصيات */
+.char-container { display: flex; gap: 15px; margin-bottom: 25px; justify-content: center; width: 100%; max-width: 400px; flex-wrap: wrap; }
+.char-btn { flex: 1; min-width: 100px; padding: 12px; background: #222; border: 3px solid #444; border-radius: 12px; cursor: pointer; transition: 0.2s; color: white; font-size: 16px; font-weight: bold; }
+.char-btn small { display: block; font-size: 12px; color: #aaa; margin-top: 5px; font-weight: normal; }
+.char-btn.active { border-color: #ffd700; background: #333; transform: scale(1.08); box-shadow: 0 0 15px rgba(255,215,0,0.3); }
+
+#reloadIndicator { position: absolute; bottom: 240px; right: 30px; color: #3498db; font-size: 15px; font-weight: bold; display: none; animation: blink 0.5s infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-#crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 24px; height: 24px; pointer-events: none; display: none; }
-#crosshair::before, #crosshair::after { content:''; position: absolute; background: rgba(255,255,255,0.8); }
-#crosshair::before { width: 2px; height: 100%; left: 50%; transform: translateX(-50%); }
-#crosshair::after { height: 2px; width: 100%; top: 50%; transform: translateY(-50%); }
-#dmgFlash { position: fixed; top:0;left:0;width:100%;height:100%; background: rgba(231,76,60,0); pointer-events: none; z-index: 45; transition: background 0.1s; }
-#minimap { position: absolute; top: 70px; right: 14px; width: 90px; height: 90px; border-radius: 8px; border: 1.5px solid rgba(255,255,255,0.3); overflow: hidden; background: rgba(0,0,0,0.5); }
-#minimapCanvas { width: 90px; height: 90px; }
-</style>
-</head>
-<body>
-<canvas id="gameCanvas"></canvas>
-<div id="dmgFlash"></div>
-
-<div id="ui">
-  <div id="killsHud">🔫 Kills: <span id="killsVal">0</span></div>
-  <div id="aliveHud">👥 Alive: <span id="aliveVal">20</span></div>
-  <div id="zoneHud">⚠️ Zone closing in <span id="zoneTimer">30</span>s</div>
-  <div id="healthBar">
-    <div id="healthLabel">❤️ HP: <span id="hpVal">100</span></div>
-    <div id="healthBg"><div id="healthFill" style="width:100%"></div></div>
-  </div>
-  <div id="ammoHud"><span>AMMO</span><span id="ammoVal">30</span>/<span id="ammoMax">30</span></div>
-  <div id="reloadIndicator">🔄 جاري إعادة التحميل...</div>
-  <div id="minimap"><canvas id="minimapCanvas" width="90" height="90"></canvas></div>
-  <div id="crosshair"></div>
-  <div id="controls">
-    <div id="joystickZone">
-      <div id="joystickBase"></div>
-      <div id="joystickKnob"></div>
-    </div>
-    <div id="btnShoot" ontouchstart="startShoot(event)" ontouchend="stopShoot(event)">🔫<br>Fire</div>
-    <div id="btnReload" ontouchstart="reloadGun(event)">🔄<br>Reload</div>
-    <div id="btnAim" id="btnAim" ontouchstart="toggleAim(event)">🎯<br>Aim</div>
-  </div>
-</div>
-
-<div id="startScreen">
-  <h1>⚔️ Battle Royale</h1>
-  <p>آخر لاعب يبقى يفوز!</p>
-  
-  <div class="char-container">
-    <div class="char-btn active" onclick="selectChar(0)" id="char0">🔵 متوازن<br><small>دم 100 | سرعة عادية</small></div>
-    <div class="char-btn" onclick="selectChar(1)" id="char1">🟢 مدرّع<br><small>دم 150 | بطيء</small></div>
-    <div class="char-btn" onclick="selectChar(2)" id="char2">🟣 نينجا<br><small>دم 80 | سريع</small></div>
-  </div>
-
-  <button class="bigBtn" onclick="startGame()">▶ العب الآن</button>
-</div>
-
-<div id="gameoverScreen">
-  <h1 id="goTitle">💀 خرجت!</h1>
-  <p id="goStats"></p>
-  <button class="bigBtn" onclick="startGame()">🔄 العب مجدداً</button>
-</div>
-
-<script>
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-const mmCanvas = document.getElementById('minimapCanvas');
-const mmCtx = mmCanvas.getContext('2d');
-
-let W, H;
-function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-resize();
-window.addEventListener('resize', resize);
-
-// Character System
-const charStats = [
-    { id: 0, speed: 3.2, maxHp: 100, color: '#2471a3', aimColor: '#1a5276' },
-    { id: 1, speed: 2.2, maxHp: 150, color: '#27ae60', aimColor: '#1e8449' },
-    { id: 2, speed: 4.5, maxHp: 80,  color: '#8e44ad', aimColor: '#6c3483' }
-];
-let selectedChar = charStats[0];
-
-function selectChar(idx) {
-    selectedChar = charStats[idx];
-    document.querySelectorAll('.char-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById('char' + idx).classList.add('active');
-}
-
-// Game state
-let game = {};
-const WORLD = 2000;
-const TILE = 60;
-const TREE_COUNT = 120;
-const ROCK_COUNT = 60;
-const HOUSE_COUNT = 15;
-const ENEMY_COUNT = 19;
-
-function startGame() {
-  document.getElementById('startScreen').style.display = 'none';
-  document.getElementById('gameoverScreen').style.display = 'none';
-  initGame();
-}
-
-function initGame() {
-  game = {
-    player: { x: WORLD/2, y: WORLD/2, angle: 0, hp: selectedChar.maxHp, maxHp: selectedChar.maxHp, speed: selectedChar.speed, color: selectedChar.color, aimColor: selectedChar.aimColor, ammo: 30, maxAmmo: 30, kills: 0, alive: true, reloading: false, reloadTime: 0, aiming: false, shootCooldown: 0 },
-    enemies: [],
-    bullets: [],
-    particles: [],
-    trees: [],
-    rocks: [],
-    houses: [],
-    zone: { x: WORLD/2, y: WORLD/2, r: WORLD*0.6, targetR: WORLD*0.3, timer: 30, phase: 1, shrinking: false, dmgTimer: 0 },
-    kills: 0,
-    alive: ENEMY_COUNT + 1,
-    running: true,
-    joystick: { active: false, dx: 0, dy: 0, startX: 0, startY: 0, id: -1 },
-    shooting: false,
-    cam: { x: WORLD/2, y: WORLD/2 }
-  };
-
-  // Generate world
-  for (let i = 0; i < TREE_COUNT; i++) {
-    game.trees.push({ x: Math.random()*WORLD, y: Math.random()*WORLD, r: 18+Math.random()*14, type: Math.random()<0.5?0:1 });
-  }
-  for (let i = 0; i < ROCK_COUNT; i++) {
-    game.rocks.push({ x: Math.random()*WORLD, y: Math.random()*WORLD, r: 14+Math.random()*12 });
-  }
-  for (let i = 0; i < HOUSE_COUNT; i++) {
-    game.houses.push({ x: 100+Math.random()*(WORLD-200), y: 100+Math.random()*(WORLD-200), w: 80+Math.random()*60, h: 80+Math.random()*60 });
-  }
-
-  // Generate enemies
-  for (let i = 0; i < ENEMY_COUNT; i++) {
-    let ex, ey;
-    do { ex = 100+Math.random()*(WORLD-200); ey = 100+Math.random()*(WORLD-200); }
-    while (Math.hypot(ex-WORLD/2, ey-WORLD/2) < 300);
-    // تم تخفيض سرعة البوتات لتكون طبيعية (بين 0.7 و 1.1)
-    game.enemies.push({ x: ex, y: ey, hp: 80+Math.random()*40, maxHp: 100, angle: Math.random()*Math.PI*2, speed: 0.7+Math.random()*0.4, alive: true, shootTimer: 60+Math.random()*120, moveTimer: 0, targetX: ex, targetY: ey, state: 'patrol', alertTimer: 0 });
-  }
-  updateHUD();
-  if (!game._loopStarted) { game._loopStarted = true; loop(); }
-}
-
-function updateHUD() {
-  const p = game.player;
-  document.getElementById('hpVal').textContent = Math.max(0,Math.round(p.hp));
-  document.getElementById('healthFill').style.width = Math.max(0,p.hp/p.maxHp*100)+'%';
-  document.getElementById('ammoVal').textContent = p.ammo;
-  document.getElementById('ammoMax').textContent = p.maxAmmo;
-  document.getElementById('killsVal').textContent = game.kills;
-  document.getElementById('aliveVal').textContent = game.alive;
-  document.getElementById('zoneTimer').textContent = Math.ceil(game.zone.timer);
-}
-
-// Joystick
-const jZone = document.getElementById('joystickZone');
-const jKnob = document.getElementById('joystickKnob');
-const jBase = document.getElementById('joystickBase');
-
-jZone.addEventListener('touchstart', e => {
-  e.preventDefault();
-  const t = e.changedTouches[0];
-  const r = jZone.getBoundingClientRect();
-  game.joystick.active = true;
-  game.joystick.id = t.identifier;
-  game.joystick.startX = r.left + r.width/2;
-  game.joystick.startY = r.top + r.height/2;
-  moveJoystick(t.clientX, t.clientY);
-}, {passive:false});
-
-jZone.addEventListener('touchmove', e => {
-  e.preventDefault();
-  for (const t of e.changedTouches) {
-    if (t.identifier === game.joystick.id) moveJoystick(t.clientX, t.clientY);
-  }
-}, {passive:false});
-
-jZone.addEventListener('touchend', e => {
-  e.preventDefault();
-  game.joystick.active = false;
-  game.joystick.dx = 0;
-  game.joystick.dy = 0;
-  jKnob.style.transform = 'translate(0,0)';
-}, {passive:false});
-
-function moveJoystick(cx, cy) {
-  const dx = cx - game.joystick.startX;
-  const dy = cy - game.joystick.startY;
-  const dist = Math.hypot(dx, dy);
-  const maxR = 35;
-  const clampedDist = Math.min(dist, maxR);
-  const angle = Math.atan2(dy, dx);
-  const nx = Math.cos(angle)*clampedDist;
-  const ny = Math.sin(angle)*clampedDist;
-  jKnob.style.transform = `translate(${nx}px,${ny}px)`;
-  game.joystick.dx = Math.cos(angle) * (clampedDist/maxR);
-  game.joystick.dy = Math.sin(angle) * (clampedDist/maxR);
-  if (dist > 0.1) game.player.angle = angle;
-}
-
-function startShoot(e) { e.preventDefault(); document.getElementById('btnShoot').classList.add('active'); game.shooting = true; }
-function stopShoot(e) { e.preventDefault(); document.getElementById('btnShoot').classList.remove('active'); game.shooting = false; }
-
-function reloadGun(e) {
-  e.preventDefault();
-  const p = game.player;
-  if (p.reloading || p.ammo === p.maxAmmo) return;
-  p
+#crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 30px; height: 30px; pointer-events: none; display:
